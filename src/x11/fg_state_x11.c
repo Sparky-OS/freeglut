@@ -168,6 +168,20 @@ int fgPlatformGlutGet ( GLenum eWhat )
 
         if( fgStructure.CurrentWindow == NULL )
             return 0;
+        /*
+         * The size the reshape callback last reported, from the last
+         * ConfigureNotify; a window manager may send a synthetic one with
+         * the size the client should use.  Before the first one, ask the
+         * server.
+         */
+        if( fgStructure.CurrentWindow->State.Width > 0 )
+        {
+            switch ( eWhat )
+            {
+            case GLUT_WINDOW_WIDTH:            return fgStructure.CurrentWindow->State.Width ;
+            case GLUT_WINDOW_HEIGHT:           return fgStructure.CurrentWindow->State.Height ;
+            }
+        }
         XGetWindowAttributes(
             fgDisplay.pDisplay.Display,
             fgStructure.CurrentWindow->Window.Handle,
